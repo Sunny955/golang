@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -12,14 +13,37 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "POST request successful!")
+	// fmt.Fprintf(w, "POST request successful!")
 
 	name := r.FormValue("name")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	fmt.Fprintf(w, "Name = %s \n", name)
-	fmt.Fprintf(w, "Email = %s \n", email)
-	fmt.Fprintf(w, "Password = %s \n", password)
+	// fmt.Fprintf(w, "Name = %s \n", name)
+	// fmt.Fprintf(w, "Email = %s \n", email)
+	// fmt.Fprintf(w, "Password = %s \n", password)
+
+	tmpl, err := template.ParseFiles("static/response.html")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to parse template: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Name     string
+		Email    string
+		Password string
+	}{
+		Name:     name,
+		Email:    email,
+		Password: password,
+	}
+
+	// Execute the template with the provided data and write the output to the response writer
+	if err := tmpl.Execute(w, data); err != nil {
+		http.Error(w, fmt.Sprintf("Failed to execute template: %v", err), http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +58,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Haan bhai laude!")
+	fmt.Fprintf(w, "Haan bhai ki haal!")
 }
 
 func main() {
