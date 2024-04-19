@@ -13,14 +13,9 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Fprintf(w, "POST request successful!")
-
 	name := r.FormValue("name")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	// fmt.Fprintf(w, "Name = %s \n", name)
-	// fmt.Fprintf(w, "Email = %s \n", email)
-	// fmt.Fprintf(w, "Password = %s \n", password)
 
 	tmpl, err := template.ParseFiles("static/response.html")
 	if err != nil {
